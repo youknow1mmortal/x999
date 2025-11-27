@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Font Converter - IMMORTAL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        body {
+            background: linear-gradient(120deg, #0f0c29, #1a1a40);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(10, 8, 25, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #4a4a8a;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            color: #b0a0ff;
+        }
+        textarea {
+            width: 100%;
+            height: 110px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #080618;
+            border: 1px solid #3a3a6a;
+            color: #f0f0ff;
+            font-size: 1.2rem;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        #output {
+            width: 100%;
+            min-height: 110px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #080618;
+            border: 1px solid #3a3a6a;
+            color: #f0f0ff;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: inherit;
+        }
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: linear-gradient(90deg, #8a6bff, #6b4de0);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .copy-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+        .warning {
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(30, 20, 40, 0.6);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #d0b0ff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Font Converter</h1>
+        <textarea id="input" placeholder="Type 'HITESH' or 'Hello World'"></textarea>
+        <div id="output">Converted text will appear here...</div>
+        <button class="copy-btn" id="copyBtn" disabled>Copy to Clipboard</button>
+        
+        <div class="warning">
+            ⚠️ Uses 🇦🇧🇨... symbols. May appear as flags on phones/PCs.<br>
+            But copies as raw letters — works in many apps as intended
+            I am unable to fix this fuck - BY HITESH.
+        </div>
+    </div>
+
+    <script>
+        // Bold Mathematical Sans-Serif (first letter only)
+        const boldMap = {
+            'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉',
+            'K': '𝐊', 'L': '𝐋', 'M': '𝐌', 'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓',
+            'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙'
+        };
+
+        // EXACT regional indicator symbols you requested: 🇦 to 🇿
+        const regionalMap = {
+            'A': '🇦', 'B': '🇧', 'C': '🇨', 'D': '🇩', 'E': '🇪', 'F': '🇫', 'G': '🇬', 'H': '🇭', 'I': '🇮', 'J': '🇯',
+            'K': '🇰', 'L': '🇱', 'M': '🇲', 'N': '🇳', 'O': '🇴', 'P': '🇵', 'Q': '🇶', 'R': '🇷', 'S': '🇸', 'T': '🇹',
+            'U': '🇺', 'V': '🇻', 'W': '🇼', 'X': '🇽', 'Y': '🇾', 'Z': '🇿'
+        };
+
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const copyBtn = document.getElementById('copyBtn');
+
+        function convertText(text) {
+            if (!text.trim()) return '';
+
+            return text.split(' ').map(word => {
+                if (!word) return '';
+
+                // First character
+                const firstChar = word.charAt(0).toUpperCase();
+                const rest = word.slice(1);
+
+                // Start with bold first letter (or original if not A-Z)
+                let result = boldMap[firstChar] !== undefined 
+                    ? boldMap[firstChar] 
+                    : word.charAt(0); // keep original if not A-Z
+
+                // Append rest as regional indicators
+                for (const char of rest) {
+                    const upper = char.toUpperCase();
+                    if (regionalMap[upper] !== undefined) {
+                        result += regionalMap[upper];
+                    } else {
+                        result += char; // keep numbers, punctuation, etc.
+                    }
+                }
+
+                return result;
+            }).join(' ');
+        }
+
+        input.addEventListener('input', () => {
+            const converted = convertText(input.value);
+            output.textContent = converted || 'Converted text will appear here...';
+            copyBtn.disabled = !converted;
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(output.textContent);
+                const original = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = original;
+                }, 1800);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = output.textContent;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Text copied!');
+            }
+        });
+    </script>
+</body>
+</html>
